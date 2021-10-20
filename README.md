@@ -1,2 +1,2 @@
-# discord_bot
-Bot para un server con amigos 
+# Bot para Discord
+Bot desarrollado con python, alojado en replit y manteniendo encendido con uptimerobot.
