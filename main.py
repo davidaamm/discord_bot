@@ -6,13 +6,11 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import json
-from keep_alive import keep_alive
 from PIL import Image, ImageDraw, ImageFont
 import io
 from twitch import get_notifications
 import random
 import requests 
-from replit import db
 from datetime import datetime, date
 
 client = commands.Bot(command_prefix='!')
@@ -517,6 +515,5 @@ async def help(ctx):
 
   await ctx.author.send(embed=embed)
 
-keep_alive()
 client.run(os.environ['TOKEN'])
 
