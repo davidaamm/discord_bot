@@ -43,10 +43,10 @@ async def rank(ctx):
     usuario=split[2]
 
   chrome_options = Options()
+  chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--disable-dev-shm-usage')
-
-  driver = webdriver.Chrome(options=chrome_options)
+  driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
   driver.get("https://api.tracker.gg/api/v2/rocket-league/standard/profile/"+plataforma+"/"+usuario+"/")
 
   pre = driver.find_element_by_tag_name("pre").text
