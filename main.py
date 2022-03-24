@@ -12,6 +12,7 @@ from twitch import get_notifications
 import random
 import requests 
 from datetime import datetime, date
+from users import db 
 
 client = commands.Bot(command_prefix='!')
 client.remove_command("help")
