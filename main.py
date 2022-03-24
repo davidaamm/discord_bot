@@ -404,7 +404,8 @@ async def sub(ctx):
       else:
         now = datetime.now()
         timestamp = datetime.timestamp(now)
-        fechaok = datetime.fromtimestamp(fechag / 1e3)
+        print(type(fechag))
+        fechaok = datetime.fromtimestamp(fechag)
         min = fechaok           #removing milli seconds
         max = timestamp
         min = datetime.fromtimestamp(min)
