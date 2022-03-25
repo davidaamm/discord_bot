@@ -5,9 +5,7 @@ from discord.ext import commands
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import time
 import json
 from PIL import Image, ImageDraw, ImageFont
 import io
@@ -56,16 +54,14 @@ async def rank(ctx):
   driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
   driver.get("https://api.tracker.gg/api/v2/rocket-league/standard/profile/"+plataforma+"/"+usuario+"/")
 
-  try:
-    pre = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.tagName("pre")))
-    )
-    
-  except:
-    print('No ha jalao este roiio')
-    driver.quit()
 
-  #pre = driver.find_element_by_tag_name("pre").text
+
+  try:
+    time.sleep(5)
+    pre = driver.find_element_by_tag_name("pre").text
+  except:
+    print('Nomás no jala esta wea')
+
   data = json.loads(pre)
   try:
     ini = data['data']['segments']
