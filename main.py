@@ -57,7 +57,7 @@ async def rank(ctx):
 
 
   try:
-    time.sleep(5)
+    time.sleep(10)
     pre = driver.find_element_by_tag_name("pre").text
   except:
     print('Nomás no jala esta wea')
