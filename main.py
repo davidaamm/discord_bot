@@ -59,7 +59,6 @@ async def rank(ctx):
   try:
     html = driver.page_source
     print(html)
-    
   except:
     print('Nomás no jala esta wea')
 
