@@ -5,15 +5,15 @@ from discord.ext import commands
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import time
 import json
+from keep_alive import keep_alive
 from PIL import Image, ImageDraw, ImageFont
 import io
-from twitch import get_notifications
+from twitch import get_notifications, get_app_acess_token
 import random
 import requests 
+from replit import db
 from datetime import datetime, date
-from users import db 
 
 client = commands.Bot(command_prefix='!')
 client.remove_command("help")
@@ -44,25 +44,22 @@ async def rank(ctx):
     usuario=split[2]
 
   chrome_options = Options()
-  chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-  chrome_options.headless = True
-  #chrome_options.add_argument('window-size=1400,600')
-  #chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-  #chrome_options.add_experimental_option('useAutomationExtension', False)  
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--disable-dev-shm-usage')
-  driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
+  url = "https://api.tracker.gg/api/v2/rocket-league/standard/profile/"+plataforma+"/"+usuario+"/"
+  driver = webdriver.Chrome(options=chrome_options)
   driver.get("https://api.tracker.gg/api/v2/rocket-league/standard/profile/"+plataforma+"/"+usuario+"/")
 
-
-
-  try:
-    html = driver.page_source
-    print(html)
-  except:
-    print('Nomás no jala esta wea')
-
+  pre = driver.find_element_by_tag_name("pre").text
   data = json.loads(pre)
+
+  #headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+
+  #cookies = {'__cflb':             '02DiuFQAkRrzD1P1mdjW28WYn2UPf2uF9JFdFxnLzyaLc', 'X-Mapping-Server':'s7'}
+
+  #r = requests.get(url, cookies=cookies, headers=headers)
+  #data = r.json()
+
   try:
     ini = data['data']['segments']
     s = len(ini)
@@ -96,7 +93,7 @@ async def rank(ctx):
         pass
     
   except:
-    print('Usuario no encontrado')
+    await ctx.send("No se ha encontrao al usuario")
 
 
   rimgs={
@@ -154,13 +151,13 @@ async def rank(ctx):
   for g in k:
     i1=r[g]
     i2=l[j][0]
+
     if i1 == i2:
       m.append([listname[g],rimgs[l[j][1]],l[j][5],l[j][6],l[j][4],l[j][3]])
       j=j+1
     else:
       m.append([listname[g],rimgs['Unranked'],"0","0","0",""])
       j=j
-
   image = Image.new(mode = "RGB", size = (800, 450),color = (44, 37, 89))
   section = Image.new(mode="RGB", size = (384, 156),color = (71, 39, 140))
   image.paste(section,(10,115))
@@ -216,7 +213,7 @@ async def rank(ctx):
   I1.text((431, 165), m[1][2]+" MMR", font=fontde, fill=(22, 242, 180))
   I1.text((431, 189), "Streak · "+m[1][3], font=fontd, fill=(22, 242, 180))
   I1.text((697, 231), m[1][5], font=fontd, fill=(22, 242, 180))
-  I1.text((431, 231), "Games Played · " + m[0][4], font=fontd, fill=(22, 242, 180))
+  I1.text((431, 231), "Games Played · " + m[1][4], font=fontd, fill=(22, 242, 180))
 
 # -------- TOURNAMENT ------- 
 
@@ -234,11 +231,10 @@ async def rank(ctx):
     image.save(image_binary, 'PNG')
     image_binary.seek(0)
     await ctx.send(file=discord.File(fp=image_binary, filename='image.png'))  
-    driver.close()
 
 # FIN  DE RANKS ROCKET LEAGUE 
 
-@loop(seconds=60)
+@loop(seconds=100)
 async def check_twitch_online_streamers():
   chnl = client.get_channel(892472599228084315)
   notifi=[]
@@ -416,7 +412,7 @@ async def sub(ctx):
       else:
         now = datetime.now()
         timestamp = datetime.timestamp(now)
-        fechaok = float(fechag)
+        fechaok = int(fechag)
         min = fechaok           #removing milli seconds
         max = timestamp
         min = datetime.fromtimestamp(min)
@@ -528,5 +524,6 @@ async def help(ctx):
 
   await ctx.author.send(embed=embed)
 
+keep_alive()
 client.run(os.environ['TOKEN'])
 

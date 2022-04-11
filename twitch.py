@@ -15,6 +15,8 @@ def get_app_acess_token():
 
   r=requests.post("https://id.twitch.tv/oauth2/token",params=params)
   access_token=r.json()['access_token']
+  print(access_token)
+    
   return access_token
 
 def get_users(login_names):
@@ -28,6 +30,7 @@ def get_users(login_names):
   }
 
   r=requests.get("https://api.twitch.tv/helix/users",params=params, headers=headers)
+
   return {entry["login"]:entry["id"] for entry in r.json()["data"]}
 
 def get_streams(users):
